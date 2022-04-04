@@ -1,4 +1,21 @@
 # Graph Neural Network based Network Competition Analysis
-Code for link prediction for car-customer network data using Graph Neural Networks (GraphSAGE) method.
 
-The code uses StellarGraph library (https://github.com/stellargraph/stellargraph).
+## General information
+- This is the anomalized data and the key part of the codes for link prediction for product competition network data using Graph Neural Networks (GraphSAGE) method. 
+- The code and data are assiocated with paper Product Competition Prediction in Engineering Design using Graph Neural Networks.
+- link prediction for product competition network data using Graph Neural Networks (GraphSAGE) method
+
+
+## Code: 
+[GraphSAGE.py](https://github.com/Yaxin-Cui/weighted-network-project/blob/main/choice_network.R)
+
+## Data:
+data: [consider_data_2013.csv](https://github.com/Yaxin-Cui/weighted-network-project/blob/main/consider_data_2013.csv), 
+[consider_data_2014.csv](https://github.com/Yaxin-Cui/weighted-network-project/blob/main/consider_data_2014.csv), 
+[product_data_2013.csv](https://github.com/Yaxin-Cui/weighted-network-project/blob/main/product_data_2013.csv), 
+[product_data_2014.csv](https://github.com/Yaxin-Cui/weighted-network-project/blob/main/product_data_2014.csv)
+
+
+## Note:
+All data have been anomalized and the real feature values have been hidden. 
+
