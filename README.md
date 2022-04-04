@@ -10,8 +10,8 @@
 [GraphSAGE.py](https://github.com/Yaxin-Cui/Graph-Neural-Network/blob/main/code/graphstellar_updated.py)
 
 ## Data:
-data: [consider_data_2013.csv](https://github.com/Yaxin-Cui/weighted-network-project/blob/main/consider_data_2013.csv), 
-[consider_data_2014.csv](https://github.com/Yaxin-Cui/weighted-network-project/blob/main/consider_data_2014.csv), 
+data: [consider_data_2013.csv](https://github.com/Yaxin-Cui/Graph-Neural-Network/blob/main/data/consider_net_2013_anom.csv), 
+[consider_data_2014.csv](https://github.com/Yaxin-Cui/Graph-Neural-Network/blob/main/data/consider_net_2014_anom.csv), 
 [product_data_2013.csv](https://github.com/Yaxin-Cui/weighted-network-project/blob/main/product_data_2013.csv), 
 [product_data_2014.csv](https://github.com/Yaxin-Cui/weighted-network-project/blob/main/product_data_2014.csv)
 
