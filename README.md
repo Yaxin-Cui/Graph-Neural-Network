@@ -12,8 +12,8 @@
 ## Data:
 data: [consider_data_2013.csv](https://github.com/Yaxin-Cui/Graph-Neural-Network/blob/main/data/consider_net_2013_anom.csv), 
 [consider_data_2014.csv](https://github.com/Yaxin-Cui/Graph-Neural-Network/blob/main/data/consider_net_2014_anom.csv), 
-[product_data_2013.csv](https://github.com/Yaxin-Cui/weighted-network-project/blob/main/product_data_2013.csv), 
-[product_data_2014.csv](https://github.com/Yaxin-Cui/weighted-network-project/blob/main/product_data_2014.csv)
+[product_data_2013.csv](https://github.com/Yaxin-Cui/Graph-Neural-Network/blob/main/data/node_attr_2013_anom.csv), 
+[product_data_2014.csv](https://github.com/Yaxin-Cui/Graph-Neural-Network/blob/main/data/node_attr_2014_anom.csv)
 
 
 ## Note:
