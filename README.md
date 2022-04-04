@@ -7,7 +7,7 @@
 
 
 ## Code: 
-[GraphSAGE.py](https://github.com/Yaxin-Cui/weighted-network-project/blob/main/choice_network.R)
+[GraphSAGE.py](https://github.com/Yaxin-Cui/Graph-Neural-Network/blob/main/code/graphstellar_updated.py)
 
 ## Data:
 data: [consider_data_2013.csv](https://github.com/Yaxin-Cui/weighted-network-project/blob/main/consider_data_2013.csv), 
