@@ -1,7 +1,6 @@
 import numpy as np
 import networkx as nx
 import pandas as pd
-#import os
 
 
 import stellargraph as sg
@@ -12,30 +11,19 @@ from stellargraph.layer import GraphSAGE, link_classification, link_regression
 
 from stellargraph.mapper import FullBatchNodeGenerator, FullBatchLinkGenerator
 from stellargraph.layer import GAT
-#from stellargraph import globalvar
 from stellargraph import StellarGraph
 
 import tensorflow.keras as keras # DO NOT USE KERAS DIRECTLY
-#from sklearn import preprocessing, feature_extraction, model_selection
 import matplotlib.pyplot as plt
 import matplotlib
 
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import OneHotEncoder
 
-#import tensorflow.keras.backend as K
-#import scipy
-
 from sklearn.metrics import roc_auc_score
 from sklearn.utils import shuffle
 import sklearn.metrics as metrics
 from sklearn.metrics import classification_report, confusion_matrix, f1_score, accuracy_score
-
-
-
-#from sklearn.model_selection import train_test_split
-#from sklearn.neural_network import MLPClassifier
-#from sklearn.linear_model import LogisticRegression
 
 from sklearn.metrics.pairwise import cosine_similarity
 
@@ -99,9 +87,6 @@ def predicted_Abin_14(Abin_14, features_14, num_neighbors):
     return Abin_14_pred
 
 
-
-
-
 def remove_isolated_A(A1):
     #This function removes nodes which are not connected to any other node and returns the index of nodes removed and the new adjacency matrix
     isl = np.where(np.sum(A1, axis = 0) == 0)[0]
@@ -111,7 +96,6 @@ def remove_isolated_A(A1):
     if(len(isl)==0):
         return [], A1
     return isl[0], A1
-
 
 
 def permute_test(A0, b, model, batch_size, num_samples, colnums, edge_ids, edge_labels):
@@ -135,7 +119,8 @@ def permute_test(A0, b, model, batch_size, num_samples, colnums, edge_ids, edge_
     #print(t_metrics)
     
     return t_metrics[1], features1
-  
+
+
 def new_test(A0, Abin_14, features1, model, batch_size, num_samples, edge_labels_test, edge_ids_test):
     #Calculate performance for a new adjacency matrix 
     g = nx.from_numpy_matrix(A0)
@@ -171,9 +156,6 @@ def new_test(A0, Abin_14, features1, model, batch_size, num_samples, edge_labels
     return t_metrics, newA, edge_ids_test, pred_prob, predicted_label
 
 
-
-# binary/real(0), categorical (1), 
-# [0,0,0,1,1,1,1,1,1,0,0,0,0,0,0,0,1,0,0,0,0,0]
 def encode_carattr(node_attr,types, vec):
     
     #Change mixed features (categorical and continuous) to one hot encoded vectors
@@ -252,10 +234,9 @@ def plot_history(history):
         ax.legend(['train', 'test'], loc='upper right')
 
 
-
 if __name__ == "__main__":
     
-    part = 0
+    part = 1
     
     font = {'family' : 'normal',
             'size'   : 18}
@@ -265,55 +246,39 @@ if __name__ == "__main__":
     np.random.seed(0)
     
 
-
     if(part==0):   
 
         """This part uses graphsage to calculate auc for a binary network. 
         
         Use the following settings:
         
-        small_set_feats = 1, if prediction only uses 6 features instead of 29 features
         future_predict = 1, if test data is from 2014 and not held out edges from 2013
-        predict_2015 = 1, if test data is from 2015
         report_alltest = 1, if AUC is also reported for entire network and not balanced positive and negative edges
         
         Abin is the binary adjacency matrix
-        Abin_14 is the binary adjacency matrix for future year (2014 or 2015)
+        Abin_14 is the binary adjacency matrix for future year (2014)
         node_attr is the node attributes for all cars
         num_nodes is the number of nodes in the graph
         """
 
-        
-        small_set_feats = 0
+    
         total_runs = 5
-        future_predict = 1
-        predict_2015 = 0
+        future_predict = 0
         report_alltest = 0
         num_neighbors = 5
-        gat_method = 1
         batch_size = 20
         epochs = 100
-        
 
 
-        #Read connectivity of every car from 2013 in df_attr
-        if(small_set_feats == 1):
-            #Read link matrix for 2013 data
-            df_attr = pd.read_csv("data/consider_net_2013c.csv", usecols = lambda column : column not in ['Car'])
-        else:
-            #Read link matrix for 2013 data
-            df_attr = pd.read_csv("data/consider_net_2013.csv", usecols = lambda column : column not in ['Unnamed: 0'])            
-        
-        
+        # #Read connectivity of every car from 2013 in df_attr
+        df_attr = pd.read_csv("consider_net_2013_anom.csv", usecols = lambda column : column not in ['Unnamed: 0'])            
+                
         A = np.array(df_attr)
-
         
         #Remove nodes which are isolated
         idx_rm, A = remove_isolated_A(A)
         
-        
         #Edge weight cutoff to generate the binary network. 
-        #cut_off = np.percentile(A, 99)   
         cut_off = 1.0   
         
         #Use some edge weight cutoff options to generate a binary network. 
@@ -322,7 +287,6 @@ if __name__ == "__main__":
         #cvec = [1.0, 5.0, 10.0, 15.0, 20.0]
         cvec = [1.0]
         
-        #neighborset = [2, 5, 10]
         neighborset = [5]
         
         #Performance list
@@ -340,26 +304,10 @@ if __name__ == "__main__":
                 #binary graph
                 g_nx = nx.from_numpy_matrix(Abin)             
                 num_nodes = len(g_nx.nodes())
+                           
                     
-        
-
-                    
-                    
-                #Read adjacency matrix of every car from 2014 network (or 2015) in df_attr_14 for test set
-                if(predict_2015 == 1):
-                    
-                    df_attr_14 = pd.read_csv("data/consider_net_2015.csv", usecols = lambda column : column not in ['Unnamed: 0'])
-               
-                else:    
-                    
-                    if(small_set_feats == 1):
-                        #Read adjacency matrix for 2014 data
-                        df_attr_14 = pd.read_csv("data/consider_net_2014c.csv", usecols = lambda column : column not in ['Car'])
-            
-                    else:
-                        df_attr_14 = pd.read_csv("data/consider_net_2014.csv", usecols = lambda column : column not in ['Unnamed: 0'])
-                    #df_attr_14 = pd.read_csv("data/consider_net_2015.csv", usecols = lambda column : column not in ['Unnamed: 0'])
- 
+                # #Read adjacency matrix of every car from 2014 network in df_attr_14 for test set
+                df_attr_14 = pd.read_csv("consider_net_2014_anom.csv", usecols = lambda column : column not in ['Unnamed: 0'])
                    
                 #Abin_14 is the binary network for test set (future year)  
                 A_14 = np.array(df_attr_14)
@@ -370,74 +318,37 @@ if __name__ == "__main__":
                 g_nx_14 = nx.from_numpy_matrix(Abin_14) 
                 
                 
-        
                 
-                # small_set_feats is 1 if only 6 features are to be used else it is 0.
+                # read the node feature of 2013 and 2014 products
+                node_attr = pd.read_csv("node_attr_2013_anom.csv", usecols = lambda column : column not in ['ID'])
                 
-                if(small_set_feats == 1):
-                    node_attr = pd.read_csv("data/node_att_2013_few.csv", usecols = lambda column : column not in ['Model_id','Model_name'])
+                node_attr_14 = pd.read_csv("node_attr_2014_anom.csv", usecols = lambda column : column not in ['ID']) 
                     
-                    if(predict_2015 == 1):
-                        node_attr_14 = pd.read_csv("data/node_att_2015_few.csv", usecols = lambda column : column not in ['Model_id','Model_name'])
-                    else:
-                        node_attr_14 = pd.read_csv("data/node_att_2014_few.csv", usecols = lambda column : column not in ['Model_id','Model_name'])
-                else:     
-                    node_attr = pd.read_csv("data/node_attr_2013.csv", usecols = lambda column : column not in ['Model_id','Model'])
+                node_attr_14 = node_attr_14.reset_index(drop=True)
                     
-                    if(predict_2015 == 1):
-                        node_attr_14 = pd.read_csv("data/node_attr_2015.csv", usecols = lambda column : column not in ['Model_id','Model']) 
-                    else:
-                        node_attr_14 = pd.read_csv("data/node_attr_2014.csv", usecols = lambda column : column not in ['Model_id','Model']) 
-                    
-                    node_attr_14 = node_attr_14.reset_index(drop=True)
-                    
-                    #Remove features for cars which were removed due to isolated node
-                    node_attr = node_attr.drop(idx_rm)
-                    node_attr = node_attr.reset_index(drop=True)
+                #Remove features for cars which were removed due to isolated node
+                node_attr = node_attr.drop(idx_rm)
+                node_attr = node_attr.reset_index(drop=True)
                     
                 #Join the two attributes list so that one-hot encoding has similar number of columns in train and test
                 all_node_attr = pd.concat([node_attr, node_attr_14], axis=0)    
                     
                 #Total features
                 numall_feats = np.shape(node_attr)[1]
-
-                
-
                     
                 input_vec = list(range(numall_feats))
 
-                    
-                    
-                if(small_set_feats == 1):
-                    
-                    #feattype is type of feature-> non-categorical (0) or categorical (1)
-                    #This is manually coded
-                    feattype = [0,0,0,0,1,1]
-                    
-                    #encode_carattr does one hot encoding of all features
-                    allfeatures = encode_carattr(all_node_attr, vec = input_vec, types = feattype)
-                    
-                    #Normalize range of features
-                    allfeatures = np.where(np.max(allfeatures, axis=0)==0, allfeatures, allfeatures*1./np.max(allfeatures, axis=0))
-                    
-                    #Remove nan values
-                    allfeatures = np.nan_to_num(allfeatures)
-                    features = allfeatures[0:num_nodes,:]
-                    features_14 = allfeatures[num_nodes:,:]
-                    
     
-                else:
-    
-                    feattype = [1,0,1,1,1,1,1,1,1,0,1,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0]
-                    allfeatures = encode_carattr(all_node_attr, vec = input_vec, types = feattype)
-                    
-                    #Normalize features
-                    allfeatures = np.where(np.max(allfeatures, axis=0)==0, allfeatures, allfeatures*1./np.max(allfeatures, axis=0))
-                    
-                    #Remove nan values
-                    allfeatures = np.nan_to_num(allfeatures)
-                    features = allfeatures[0:num_nodes,:]
-                    features_14 = allfeatures[num_nodes:,:]
+                feattype = [1,0,1,1,1,1,1,1,1,0,1,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0]
+                allfeatures = encode_carattr(all_node_attr, vec = input_vec, types = feattype)
+                
+                #Normalize features
+                allfeatures = np.where(np.max(allfeatures, axis=0)==0, allfeatures, allfeatures*1./np.max(allfeatures, axis=0))
+                
+                #Remove nan values
+                allfeatures = np.nan_to_num(allfeatures)
+                features = allfeatures[0:num_nodes,:]
+                features_14 = allfeatures[num_nodes:,:]
                     
                 
                 num_feats = np.shape(features)[1]
@@ -491,26 +402,14 @@ if __name__ == "__main__":
                     
                         edge_splitter_test = EdgeSplitter(g_nx)
                         
-    #                    G_test, edge_ids_test, edge_labels_test = edge_splitter_test.train_test_split(p=0.1, method="global", keep_connected=True)        
-    #        
-    #                    edge_splitter_train = EdgeSplitter(G_test)
-    #                    
-    #                    G_train, edge_ids_train, edge_labels_train = edge_splitter_train.train_test_split(p=0.1, method="global", keep_connected=True)
-    #            
-    #                    G_train = sg.StellarGraph(G_train, node_features="feature")
-    #                    G_test = sg.StellarGraph(G_test, node_features="feature")
-                        
+                       
                        
                         G_train, edge_ids_test, edge_labels_test = edge_splitter_test.train_test_split(p=0.1, method="global", keep_connected=False)        
             
                         G_test = nx.difference(g_nx, G_train)
-                        
-                        #Predicted A_14. Use below function with regression models
+
                         Abin_13_pred = predicted_Abin_14(Abin, features, num_neighbors)
-    #    
-    #            
-    #            
-    #                    #Find networkx graph from predicted binary matrix
+
                         g_nx_13_pred = nx.from_numpy_matrix(Abin_13_pred)   
                         
                         #Allocate features to nodes                        
@@ -538,8 +437,7 @@ if __name__ == "__main__":
                         edge_labels_train = np.array(edge_labels_train)
                         
                         
-                        G_test = StellarGraph.from_networkx(g_nx_13_pred, node_features = "feature")
-                        #G_test = sg.StellarGraph(G_train, node_features="feature")                     
+                        G_test = StellarGraph.from_networkx(g_nx_13_pred, node_features = "feature")                    
                         G_train = sg.StellarGraph(G_train, node_features="feature")
                        
                         
@@ -572,8 +470,7 @@ if __name__ == "__main__":
                         #Alternatively, you can have missing links in test set too (slows the code)
                         
                         neg_edges = [[allneg_edges[0][i], allneg_edges[1][i]] for i in total_neg_edges[0:num_pos_edges]]
-                        #neg_edges = [[allneg_edges[0][i], allneg_edges[1][i]] for i in total_neg_edges]#
-                        
+
                         # test edges combine both positive and negative edges (the same number)
                         edge_ids_test = edge_ids_tepos + neg_edges
                         
@@ -612,70 +509,44 @@ if __name__ == "__main__":
     
                     
                     
-
-                    if(gat_method==0):
                     
-                        #num_samples = [20, 10]
-                        #num_samples = [10, 5]
-                        num_samples = [5, 5]
-        
-                        
-                        # linkgenerator
-                        train_gen = GraphSAGELinkGenerator(G_train, batch_size, num_samples)
-                        test_gen = GraphSAGELinkGenerator(G_test, batch_size, num_samples)
-
-                        #layer_sizes = [20, 20]
-                        #layer_sizes = [10, 10]
-                        layer_sizes = [5, 5]
+                    #num_samples = [20, 10]
+                    #num_samples = [10, 5]
+                    num_samples = [5, 5]
+    
                     
-                        assert len(layer_sizes) == len(num_samples)
+                    # linkgenerator
+                    train_gen = GraphSAGELinkGenerator(G_train, batch_size, num_samples)
+                    test_gen = GraphSAGELinkGenerator(G_test, batch_size, num_samples)
 
-                        graphsage = GraphSAGE(layer_sizes=layer_sizes, generator=train_gen, bias=True, dropout=0.3)
+                    #layer_sizes = [20, 20]
+                    #layer_sizes = [10, 10]
+                    layer_sizes = [5, 5]
+                
+                    assert len(layer_sizes) == len(num_samples)
 
-                        x_inp, x_out = graphsage.in_out_tensors()
+                    graphsage = GraphSAGE(layer_sizes=layer_sizes, generator=train_gen, bias=True, dropout=0.3)
 
-                        #Combine node embeddings to find edge embedding using dot product                
-                        prediction = link_classification(output_dim=1, output_act="relu", edge_embedding_method='ip')(x_out)
-                        #prediction = link_classification(output_dim=1, output_act="relu", edge_embedding_method='avg')(x_out)
-                        #prediction = link_classification(output_dim=1, output_act="relu", edge_embedding_method='mul')(x_out)
-                        #prediction = link_classification(output_dim=1, output_act="sigmoid", edge_embedding_method='ip')(x_out)
-                        #prediction = link_classification(output_dim=1, output_act="relu", edge_embedding_method='l2')(x_out)
+                    x_inp, x_out = graphsage.in_out_tensors()
+
+                    #Combine node embeddings to find edge embedding using dot product                
+                    prediction = link_classification(output_dim=1, output_act="relu", edge_embedding_method='ip')(x_out)
+                    #prediction = link_classification(output_dim=1, output_act="relu", edge_embedding_method='avg')(x_out)
+                    #prediction = link_classification(output_dim=1, output_act="relu", edge_embedding_method='mul')(x_out)
+                    #prediction = link_classification(output_dim=1, output_act="sigmoid", edge_embedding_method='ip')(x_out)
+                    #prediction = link_classification(output_dim=1, output_act="relu", edge_embedding_method='l2')(x_out)]
                     
 
 
-                    else:
-
-                        # GAT link gererator
-                        train_gen = FullBatchLinkGenerator(G_train,method="gat")
-                        test_gen = FullBatchLinkGenerator(G_test,method="gat")
-                        
-                        gat = GAT(layer_sizes=[8, 4],
-                        activations=["elu", "softmax"],
-                        attn_heads=8,
-                        bias = True,
-                        generator=train_gen,
-                        in_dropout=0.5,
-                        attn_dropout=0.5,
-                        normalize=None)
-
-                        x_inp, x_out = gat.in_out_tensors()
-
-                        prediction = LinkEmbedding(activation="relu",method ="ip")(x_out)
-                        prediction = keras.layers.Reshape((-1,))(prediction)
-                    
-                    
-                   
                     
                     #Train tf model for classification
                     model = keras.Model(inputs=x_inp, outputs=prediction)
                     
                     model.compile(optimizer=keras.optimizers.Adam(lr=1e-3), loss=keras.losses.binary_crossentropy, metrics=[keras.metrics.AUC()])
-                    
-                    
+                                        
                     
                     init_train_metrics = model.evaluate(train_gen.flow(edge_ids_train,edge_labels_train))
                     init_test_metrics = model.evaluate(test_gen.flow(edge_ids_test, edge_labels_test))
-                    
                     
             
                     print("\nTrain Set Metrics of the initial (untrained) model:")
@@ -718,8 +589,7 @@ if __name__ == "__main__":
                 
                 #Test confusion matrix
                 Ytest = model.predict(test_gen.flow(edge_ids_test, edge_labels_test))
-                if(gat_method==1):
-                    Ytest = Ytest.T
+
                 print("\nTesting confusion matrix\n")
                 print(confusion_matrix(edge_labels_test, np.round(Ytest)))
                                 
@@ -727,14 +597,10 @@ if __name__ == "__main__":
                 print("\nTraining confusion matrix\n")
                 Ytrain = model.predict(train_gen.flow(edge_ids_train, edge_labels_train))
 
-                if(gat_method == 1):
-                    Ytrain = Ytrain.T
-
                 print(confusion_matrix(edge_labels_train, np.round(Ytrain)))
                 
                 print("Classification report and F1 score")
                 print(classification_report(edge_labels_test, np.round(Ytest), target_names=['0', '1']))
-                
                 
               
                 #Check performance on prediction of all edges instead of equal positive and negative edges
@@ -772,8 +638,6 @@ if __name__ == "__main__":
         
 
         
-
-        
     elif(part==1):  
 
         #Permutation based feature importance for any model run above. Lower prediction performance means more important feature.
@@ -793,11 +657,7 @@ if __name__ == "__main__":
         bb =[]
         
         
-        if(small_set_feats == 1):
-            fvec = [1, 1, 1, 1, 5, 17]
-        else:
-            
-            fvec = [2, 1, 67, 5, 9, 34, 25, 17, 8, 1, 8, 15, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+        fvec = [2, 1, 67, 5, 9, 34, 25, 17, 8, 1, 8, 15, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
         numf = len(fvec)
         perf = np.zeros((numf,num_repeat))
         
@@ -857,7 +717,8 @@ if __name__ == "__main__":
         plt.xticks(np.arange(numall_feats),list(node_attr), fontsize=18, rotation = 45)
         plt.yticks(fontsize=18)
         plt.savefig('results/'+str(test)+'featureimportance.eps', transparent = 'True', dpi=200, format='eps' )
-        
+
+
     elif(part==2): 
         
         """Test recursive improvement of test performance by calculating the predicted adjacency matrix and
@@ -874,8 +735,7 @@ if __name__ == "__main__":
         allnewpred_prob =[]
         allnewpredicted_label =[]
         
-        
-        
+         
         
         allpos_edges = np.where(Abin_14==1)
         total_pos_edges = np.arange(len(allpos_edges[0]))
@@ -885,7 +745,6 @@ if __name__ == "__main__":
         #Find all missing edges which exist in 2014 data
         allneg_edges = np.where(Abin_14==0)
         total_neg_edges = np.arange(len(allneg_edges[0]))
-
 
         
         #neg_edges = [[allneg_edges[0][i], allneg_edges[1][i]] for i in total_neg_edges[0:num_pos_edges]]
@@ -918,27 +777,4 @@ if __name__ == "__main__":
         
         
 
-#['turbo',
-# 'autotrans',
-# 'awd',
-# 'parent_brand',
-# 'V16',
-# 'V18',
-# 'V20',
-# 'V34',
-# 'V44',
-# 'segment_num',
-# 'community',
-# 'luxury',
-# 'enginesize_modelave',
-# 'power_modelave',
-# 'fuelconsump_modelave',
-# 'price_modelave',
-# 'makeorigin',
-# 'Fuel_per_power',
-# 'thirdrow',
-# 'Price_log',
-# 'Power_log',
-# 'import']             
-       
     
