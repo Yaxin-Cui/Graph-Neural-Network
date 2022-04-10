@@ -1,8 +1,8 @@
 # Graph Neural Network based Network Competition Analysis
 
 ## General information
-- This is the anomalized data and the key part of the codes for link prediction for product competition network data using Graph Neural Networks (GraphSAGE) method. 
-- The code and data are assiocated with paper Product Competition Prediction in Engineering Design using Graph Neural Networks. Experiment code associated with the paper: A Graph Neural Network Approach for Product Relationship Prediction (https://arxiv.org/abs/2105.05881)
+- This is the anomalized data and the key part of the codes for link prediction for product competition network data using Graph Neural Networks (GraphSAGE) method. ![GraphSAGE](https://github.com/Yaxin-Cui/Graph-Neural-Network/blob/main/GraphSAGE.png)
+- The code and data are assiocated with paper Product Competition Prediction in Engineering Design using Graph Neural Networks. Experiment code associated with the paper: A Graph Neural Network Approach for Product Relationship Prediction (https://arxiv.org/abs/2105.05881) ![Framework](https://github.com/Yaxin-Cui/Graph-Neural-Network/blob/main/Framework.png)
 - link prediction for product competition network data using Graph Neural Networks (GraphSAGE) method
 
 ## License
