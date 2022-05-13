@@ -11,15 +11,21 @@ Feel free to use all or portions for your research or related projects so long a
 Ahmed, F., Cui, Y., Fu, Y., & Chen, W. (2021, August). A graph neural network approach for product relationship prediction. In International Design Engineering Technical Conferences and Computers and Information in Engineering Conference (Vol. 85383, p. V03AT03A036). American Society of Mechanical Engineers.
 
 ```
-@inproceedings{ahmed2021graph,
-  title={A graph neural network approach for product relationship prediction},
-  author={Ahmed, Faez and Cui, Yaxin and Fu, Yan and Chen, Wei},
-  booktitle={International Design Engineering Technical Conferences and Computers and Information in Engineering Conference},
-  volume={85383},
-  pages={V03AT03A036},
-  year={2021},
-  organization={American Society of Mechanical Engineers}
+
+@article{ahmed2022graph,
+    author = {Ahmed, Faez and Cui, Yaxin and Fu, Yan and Chen, Wei},
+    title = "{Product Competition Prediction in Engineering Design Using Graph Neural Networks}",
+    journal = {ASME Open Journal of Engineering},
+    volume = {1},
+    year = {2022},
+    month = {05},
+    issn = {2770-3495},
+    doi = {10.1115/1.4054299},
+    url = {https://doi.org/10.1115/1.4054299},
+    note = {011020},
+    eprint = {https://asmedigitalcollection.asme.org/openengineering/article-pdf/doi/10.1115/1.4054299/6879086/aoje\_1\_011020.pdf},
 }
+
 ```
 
 ## Code: 
